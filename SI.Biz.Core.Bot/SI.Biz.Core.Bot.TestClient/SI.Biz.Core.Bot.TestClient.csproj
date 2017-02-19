@@ -4,25 +4,27 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A28D4320-AFFF-454C-8D36-4E3E3DE54470}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{93790681-E483-44EE-B743-3907FCE568D8}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SI.Biz.Core.Bot</RootNamespace>
-    <AssemblyName>SI.Biz.Core.Bot</AssemblyName>
+    <RootNamespace>SI.Biz.Core.Bot.TestClient</RootNamespace>
+    <AssemblyName>SI.Biz.Core.Bot.TestClient</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\Program Files %28x86%29\Software Innovation\360\webservices\SI.WS.Core\bin\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\..\Program Files %28x86%29\Software Innovation\360\webservices\SI.WS.Core\bin\SI.Biz.Core.Bot.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -30,24 +32,18 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>growBusiness.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Program Files (x86)\Microsoft Visual Studio 12.0\Blend\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="si.biz.core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=84474dc3c65e4430, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\SI.Biz.Core\v4.0_4.0.0.0__84474dc3c65e4430\si.biz.core.dll</HintPath>
     </Reference>
-    <Reference Include="si.biz.core.datatypes, Version=4.0.0.0, Culture=neutral, PublicKeyToken=84474dc3c65e4430, processorArchitecture=MSIL">
+    <Reference Include="SI.Biz.Core.Bot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=84474dc3c65e4430, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\SI.Biz.Core.DataTypes\v4.0_4.0.0.0__84474dc3c65e4430\si.biz.core.datatypes.dll</HintPath>
+      <HintPath>..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\SI.Biz.Core.Bot\v4.0_1.0.0.0__84474dc3c65e4430\SI.Biz.Core.Bot.dll</HintPath>
+    </Reference>
+    <Reference Include="SI.Biz.Core.ClientAccess, Version=4.0.0.0, Culture=neutral, PublicKeyToken=84474dc3c65e4430, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\SI.Biz.Core.ClientAccess\v4.0_4.0.0.0__84474dc3c65e4430\SI.Biz.Core.ClientAccess.dll</HintPath>
     </Reference>
     <Reference Include="SI.Linq.Meta, Version=4.0.0.0, Culture=neutral, PublicKeyToken=84474dc3c65e4430, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -56,6 +52,10 @@
     <Reference Include="si.linq.provider, Version=4.0.0.0, Culture=neutral, PublicKeyToken=84474dc3c65e4430, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\SI.Linq.Provider\v4.0_4.0.0.0__84474dc3c65e4430\si.linq.provider.dll</HintPath>
+    </Reference>
+    <Reference Include="SI.Util, Version=4.0.0.0, Culture=neutral, PublicKeyToken=84474dc3c65e4430, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\SI.Util\v4.0_4.0.0.0__84474dc3c65e4430\SI.Util.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -66,25 +66,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Case\Model\BotCaseDataModel.cs" />
-    <Compile Include="Case\BotCaseManager.cs" />
-    <Compile Include="Case\BotCaseRepository.cs" />
-    <Compile Include="Case\RepositoryLogics\FindCasesByClassCode.cs" />
-    <Compile Include="Case\RepositoryLogics\FindCaseByNumber.cs" />
-    <Compile Include="Case\RepositoryLogics\FindCasesByResponsible.cs" />
-    <Compile Include="Case\RepositoryLogics\FindCasesByStatus.cs" />
-    <Compile Include="Case\RepositoryLogics\FindCasesByTitle.cs" />
-    <Compile Include="Case\RepositoryLogics\FindMyCasesFromLastWeek.cs" />
-    <Compile Include="Case\RepositoryLogics\GetMyOpenCases.cs" />
-    <Compile Include="NullHandler.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="_Compatibility\Case\BotCaseManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Document\File\" />
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="growBusiness.snk" />
+    <ProjectReference Include="..\SI.Biz.Core.Bot.InvokeWrapper\SI.Biz.Core.Bot.InvokeWrapper.csproj">
+      <Project>{f22a915c-acff-4a63-baad-d1ed740a2f78}</Project>
+      <Name>SI.Biz.Core.Bot.InvokeWrapper</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
