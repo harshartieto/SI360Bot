@@ -19,7 +19,7 @@ namespace SI.Biz.Core.Bot.InvokeWrapper
 
 
 
-        #region Public Methods
+        #region Public Properties
 
         public EndpointAddress RemoteAddress { private set; get; }
 

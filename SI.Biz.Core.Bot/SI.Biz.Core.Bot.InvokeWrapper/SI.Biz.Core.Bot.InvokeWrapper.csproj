@@ -68,6 +68,7 @@
     <Compile Include="BLInvoker.cs" />
     <Compile Include="BLManagerInvokerBase.cs" />
     <Compile Include="Case\CaseManagerInvoker.cs" />
+    <Compile Include="FakeImplementation\Case\FakeCaseManagerInvoker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

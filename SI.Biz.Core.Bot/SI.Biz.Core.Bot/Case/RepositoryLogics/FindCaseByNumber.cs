@@ -18,9 +18,9 @@ namespace SI.Biz.Core.Bot.Case.RepositoryLogics
     {
         public BotCase GetCaseByNumber(string caseNumber)
         {
-            return null;
-            //var caseInfo = Get.Context.Case.Where(x => x.Name == caseNumber).OprFirstOrDefault();
-            //return caseInfo == null ? Empty<BotCase>.Default() : GetCaseInfoObject(caseInfo);
+
+            var caseInfo = Get.Context.Case.Where(x => x.Name == caseNumber).OprFirstOrDefault();
+            return caseInfo == null ? Empty<BotCase>.Default() : GetCaseInfoObject(caseInfo);
         }
 
         private static BotCase GetCaseInfoObject(Linq.Meta.Case caseInfo)

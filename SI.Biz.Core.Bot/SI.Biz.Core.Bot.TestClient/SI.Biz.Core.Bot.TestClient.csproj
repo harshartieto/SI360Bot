@@ -57,6 +57,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\SI.Util\v4.0_4.0.0.0__84474dc3c65e4430\SI.Util.dll</HintPath>
     </Reference>
+    <Reference Include="SimpleImpersonation">
+      <HintPath>..\packages\SimpleImpersonation.2.0.1\lib\net40-Client\SimpleImpersonation.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -71,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SI.Biz.Core.Bot.InvokeWrapper\SI.Biz.Core.Bot.InvokeWrapper.csproj">

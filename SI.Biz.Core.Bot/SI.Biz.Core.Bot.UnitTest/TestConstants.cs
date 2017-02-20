@@ -10,7 +10,7 @@ namespace SI.Biz.Core.Bot.UnitTest
 {
     public class TestConstants
     {
-        public const string EndPointUri = "http://360main-01:8088/SI.WS.Core/CommonHost.svc/ManagerFactory";
+        public const string EndPointUri = "http://localhost:8088/SI.WS.Core/CommonHost.svc/ManagerFactory";
 
         public const string User = "no\\rd-super";
 
