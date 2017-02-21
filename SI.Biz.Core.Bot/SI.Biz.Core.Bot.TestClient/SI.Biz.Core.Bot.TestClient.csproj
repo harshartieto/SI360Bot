@@ -76,12 +76,6 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SI.Biz.Core.Bot.InvokeWrapper\SI.Biz.Core.Bot.InvokeWrapper.csproj">
-      <Project>{f22a915c-acff-4a63-baad-d1ed740a2f78}</Project>
-      <Name>SI.Biz.Core.Bot.InvokeWrapper</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

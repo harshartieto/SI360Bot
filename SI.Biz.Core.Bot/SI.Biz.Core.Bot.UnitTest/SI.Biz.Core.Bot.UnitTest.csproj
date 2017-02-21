@@ -39,6 +39,10 @@
       <Private>True</Private>
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="si.biz.core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=84474dc3c65e4430, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\SI.Biz.Core\v4.0_4.0.0.0__84474dc3c65e4430\si.biz.core.dll</HintPath>
+    </Reference>
     <Reference Include="SimpleImpersonation">
       <HintPath>..\packages\SimpleImpersonation.2.0.1\lib\net40-Client\SimpleImpersonation.dll</HintPath>
     </Reference>
@@ -67,10 +71,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SI.Biz.Core.Bot.InvokeWrapper\SI.Biz.Core.Bot.InvokeWrapper.csproj">
-      <Project>{f22a915c-acff-4a63-baad-d1ed740a2f78}</Project>
-      <Name>SI.Biz.Core.Bot.InvokeWrapper</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SI.Biz.Core.Bot\SI.Biz.Core.Bot.csproj">
       <Project>{a28d4320-afff-454c-8d36-4e3e3de54470}</Project>
       <Name>SI.Biz.Core.Bot</Name>

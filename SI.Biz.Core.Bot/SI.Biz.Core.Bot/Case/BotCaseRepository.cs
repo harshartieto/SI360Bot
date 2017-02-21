@@ -11,19 +11,18 @@ namespace SI.Biz.Core.Bot.Case
 
     interface IBotCaseRepository
     {
-        IEnumerable<BotCase> GetMyOpenCases(string userId, IFindMyOpenCases objGetMyOpenCases);
-
-        IEnumerable<BotCase> FindMyCasesFromLastWeek(string userId, IFindCasesFromLastWeek objCaseFromLastWeek);
-
+        
         BotCase FindCaseByNumber(string caseNumber, IFindCaseByNumber objCaseByNumber);
 
         IEnumerable<BotCase> FindCasesByTitle(string title, IFindCasesByTitle objCaseByTitle);
 
-        IEnumerable<BotCase> FindCasesByResponsible(string responsiblePerson, IFindCasesByResponsible objCaseByResponsible);
+        IEnumerable<BotCase> FindCasesByStatus(int status, IFindCasesByStatus objCaseByStatus);
 
-        IEnumerable<BotCase> FindCasesByStatus(string status, IFindCasesByStatus objCaseByStatus);
+        IEnumerable<BotCase> GetMyOpenCases(string userId, IFindMyOpenCases objGetMyOpenCases);
 
-        IEnumerable<BotCase> FindCasesByClassCode(string classCode, IFindCasesByClassCode objCaseByClassCode);
+        IEnumerable<BotCase> FindCasesByResponsible(int ourRefKey, IFindCasesByResponsible objCaseByResponsible);
+
+        IEnumerable<BotContact> GetAllResponsiblePersons(string searchName, IFindAllResponsiblePersons objCaseByClassCode);
 
     }
 
@@ -34,9 +33,9 @@ namespace SI.Biz.Core.Bot.Case
             return objGetMyOpenCases.GetMyOpenCases(userId);
         }
 
-        public IEnumerable<BotCase> FindMyCasesFromLastWeek(string userId, IFindCasesFromLastWeek objCaseFromLastWeek)
+        public IEnumerable<BotContact> GetAllResponsiblePersons(string searchName, IFindAllResponsiblePersons objAllResponsiblePersons)
         {
-            return objCaseFromLastWeek.GetMyCasesFromLastWeek(userId);
+            return objAllResponsiblePersons.GetAllResponsiblePersons(searchName);
         }
 
         public BotCase FindCaseByNumber(string caseNumber, IFindCaseByNumber objCaseByNumber)
@@ -49,19 +48,14 @@ namespace SI.Biz.Core.Bot.Case
             return objCaseByTitle.GetCasesByTitle(title);
         }
 
-        public IEnumerable<BotCase> FindCasesByResponsible(string responsiblePerson, IFindCasesByResponsible objCaseByResponsible)
+        public IEnumerable<BotCase> FindCasesByResponsible(int ourRefKey, IFindCasesByResponsible objCaseByResponsible)
         {
-            return objCaseByResponsible.GetCasesByResponsible(responsiblePerson);
+            return objCaseByResponsible.GetCasesByResponsible(ourRefKey);
         }
 
-        public IEnumerable<BotCase> FindCasesByStatus(string status, IFindCasesByStatus objCaseByStatus)
+        public IEnumerable<BotCase> FindCasesByStatus(int status, IFindCasesByStatus objCaseByStatus)
         {
             return objCaseByStatus.GetCasesByStatus(status);
-        }
-
-        public IEnumerable<BotCase> FindCasesByClassCode(string classCode, IFindCasesByClassCode objCaseByClassCode)
-        {
-            return objCaseByClassCode.GetCasesByClassCode(classCode);
         }
     }
 }

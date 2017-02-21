@@ -15,22 +15,6 @@ namespace SI.Biz.Core.Bot
     /// </summary>
     public class BotCaseManager
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public static List<BotCase> GetMyOpenCases(string userId)
-        {
-            var caseRepository = GetBotRepositoryObject();
-            return caseRepository.GetMyOpenCases(userId, new FindMyOpenCases()).ToList();
-        }
-
-        public static List<BotCase> FindMyCasesFromLastWeek(string userId)
-        {
-            var caseRepository = GetBotRepositoryObject();
-            return caseRepository.FindMyCasesFromLastWeek(userId, new FindMyCasesFromLastWeek()).ToList();
-        }
 
         public static BotCase FindCaseByNumber(string caseId)
         {
@@ -44,22 +28,33 @@ namespace SI.Biz.Core.Bot
             return caseRepository.FindCasesByTitle(title, new FindCasesByTitle()).ToList();
         }
 
-        public static List<BotCase> FindCasesByResponsible(string responsiblePerson)
+        public static List<BotCase> FindCasesByResponsible(string ourRefKey)
         {
             var caseRepository = GetBotRepositoryObject();
-            return caseRepository.FindCasesByResponsible(responsiblePerson, new FindCasesByResponsible()).ToList();
+            return caseRepository.FindCasesByResponsible(Int32.Parse(ourRefKey), new FindCasesByResponsible()).ToList();
         }
 
-        public static List<BotCase> FindCasesByStatus(string status)
+        public static List<BotCase> FindCasesByStatus(string statusKey)
         {
             var caseRepository = GetBotRepositoryObject();
-            return caseRepository.FindCasesByStatus(status, new FindCasesByStatus()).ToList();
+            return caseRepository.FindCasesByStatus(Int32.Parse(statusKey), new FindCasesByStatus()).ToList();
         }
 
-        public static List<BotCase> FindCasesByClassCode(string classCode)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public static List<BotCase> GetMyOpenCases(string userId)
         {
             var caseRepository = GetBotRepositoryObject();
-            return caseRepository.FindCasesByClassCode(classCode, new FindCasesByClassCode()).ToList();
+            return caseRepository.GetMyOpenCases(userId, new FindMyOpenCases()).ToList();
+        }
+
+        public static List<BotContact> GetAllResponsiblePersons(string searchName)
+        {
+            var caseRepository = GetBotRepositoryObject();
+            return caseRepository.GetAllResponsiblePersons(searchName, new FindAllResponsiblePersons()).ToList();
         }
 
         private static BotCaseRepository GetBotRepositoryObject()

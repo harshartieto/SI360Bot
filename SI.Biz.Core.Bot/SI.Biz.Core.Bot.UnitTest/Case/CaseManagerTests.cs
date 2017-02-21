@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SI.Biz.Core.Bot.InvokeWrapper.Case;
-using SI.Biz.Core.Bot.InvokeWrapper.FakeImplementation.Case;
+
 
 namespace SI.Biz.Core.Bot.UnitTest.Case
 {
@@ -13,18 +12,18 @@ namespace SI.Biz.Core.Bot.UnitTest.Case
     public class CaseManagerTests
     {
 
-        private CaseManagerInvoker _caseManagerInvoker;
+        private SI.Biz.Core.Bot.Compatibility.BotCaseManager _caseManagerInvoker;
 
         [TestInitialize]
         public void Initialize()
         {
-            _caseManagerInvoker = new CaseManagerInvoker(TestConstants.EndPointUri, TestConstants.User);
+            _caseManagerInvoker = new SI.Biz.Core.Bot.Compatibility.BotCaseManager();
         }
 
         [TestMethod]
         public void FindCaseMyNumber_Finds360CaseByItsNumber_ReturnsBotCaseObject()
         {
-            var result = _caseManagerInvoker.FindCaseByNumber("12");
+            var result = _caseManagerInvoker.FindCaseByNumber("no\\rd-super", "16/00001");
             Assert.IsNotNull(result);
             //Assert.IsTrue(!string.IsNullOrEmpty(caseDetail));
         }
