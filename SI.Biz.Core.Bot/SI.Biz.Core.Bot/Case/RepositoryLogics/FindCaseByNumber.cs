@@ -19,13 +19,14 @@ namespace SI.Biz.Core.Bot.Case.RepositoryLogics
         public BotCase GetCaseByNumber(string caseNumber)
         {
             var caseInfo = Get.Context.Case.Where(ca => ca.Name == caseNumber
-                            && ca.OurRef.OprJoin(JoinType.EqualJoin)
-                            && ca.ToOrgUnit.OprJoin(JoinType.EqualJoin)
-                            && ca.ToScrapCode.OprJoin(JoinType.EqualJoin))
+                            && ca.OurRef.OprJoin(JoinType.LeftJoin)
+                            && ca.ToOrgUnit.OprJoin(JoinType.LeftJoin)
+                            && ca.ToScrapCode.OprJoin(JoinType.LeftJoin))
                           .Select(ca => new 
                           {
                               Recno = ca.Recno,
                               Title = ca.UnofficialTitle,
+                              Name=ca.Name,
                               Description = ca.Description,
                               Notes = ca.Notes,
                               OurRefRecno = ca.OurRefKey,
@@ -38,7 +39,6 @@ namespace SI.Biz.Core.Bot.Case.RepositoryLogics
                               PreserveYears = ca.PreserveYears
                           })
                           .OprFirstOrDefault();
-
 
             var botCase = caseInfo == null
                           ? Empty<BotCase>.Default()
@@ -63,12 +63,16 @@ namespace SI.Biz.Core.Bot.Case.RepositoryLogics
                                     ,
                                     OrgUnit = new BotContact
                                     {
-                                        Recno = caseInfo.OrgUnitRecno.HasValue ? caseInfo.OurRefRecno.Value : -1
+                                        Recno = caseInfo.OrgUnitRecno.HasValue ? caseInfo.OrgUnitRecno.Value : -1
                                                   ,
                                         SearchName = caseInfo.OrgUnitSearchName
                                                   ,
                                         Email = caseInfo.OrgUnitEmail
                                     }
+                                    ,
+                                    ScrapCode = caseInfo.ScrapCode,
+                                    PreserveYears = caseInfo.PreserveYears.HasValue ? caseInfo.PreserveYears.Value : -1
+
                                 };
             return botCase;
         }

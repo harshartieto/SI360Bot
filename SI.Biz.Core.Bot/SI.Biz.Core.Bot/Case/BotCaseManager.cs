@@ -31,13 +31,13 @@ namespace SI.Biz.Core.Bot
         public static List<BotCase> FindCasesByResponsible(string ourRefKey)
         {
             var caseRepository = GetBotRepositoryObject();
-            return caseRepository.FindCasesByResponsible(Int32.Parse(ourRefKey), new FindCasesByResponsible()).ToList();
+            return caseRepository.FindCasesByResponsible(ourRefKey, new FindCasesByResponsible()).ToList();
         }
 
         public static List<BotCase> FindCasesByStatus(string statusKey)
         {
             var caseRepository = GetBotRepositoryObject();
-            return caseRepository.FindCasesByStatus(Int32.Parse(statusKey), new FindCasesByStatus()).ToList();
+            return caseRepository.FindCasesByStatus(statusKey, new FindCasesByStatus()).ToList();
         }
 
         /// <summary>
@@ -55,6 +55,12 @@ namespace SI.Biz.Core.Bot
         {
             var caseRepository = GetBotRepositoryObject();
             return caseRepository.GetAllResponsiblePersons(searchName, new FindAllResponsiblePersons()).ToList();
+        }
+
+        public static List<BotCaseStatus> GetAllCaseStatus() {
+
+            var caseRepository = GetBotRepositoryObject();
+            return caseRepository.GetAllCaseStatus(new FindAllCaseStatus()).ToList();
         }
 
         private static BotCaseRepository GetBotRepositoryObject()

@@ -10,23 +10,25 @@ namespace SI.Biz.Core.Bot.Case.RepositoryLogics
 {
     interface IFindCasesByResponsible
     {
-        IEnumerable<SI.Biz.Core.Bot.BotCase> GetCasesByResponsible(int ourRefkey);
+        IEnumerable<SI.Biz.Core.Bot.BotCase> GetCasesByResponsible(string ourRefkey);
     }
 
     sealed class FindCasesByResponsible : IFindCasesByResponsible
     {
-        public IEnumerable<BotCase> GetCasesByResponsible(int ourRefkey)
+        public IEnumerable<BotCase> GetCasesByResponsible(string ourRefkey)
         {
-            var caseList = Get.Context.Case.Where(ca => ca.OurRefKey == ourRefkey
-                           && ca.OurRef.OprJoin(JoinType.EqualJoin)
-                           && ca.ToOrgUnit.OprJoin(JoinType.EqualJoin)
-                           && ca.ToScrapCode.OprJoin(JoinType.EqualJoin))
+            int ourRefkey1 = int.Parse(ourRefkey);
+            var caseList = Get.Context.Case.Where(ca => ca.OurRefKey == ourRefkey1
+                           && ca.OurRef.OprJoin(JoinType.LeftJoin)
+                           && ca.ToOrgUnit.OprJoin(JoinType.LeftJoin)
+                           && ca.ToScrapCode.OprJoin(JoinType.LeftJoin))
                          .Select(ca => new
                          {
                              Recno = ca.Recno,
                              Title = ca.UnofficialTitle,
                              Description = ca.Description,
                              Notes = ca.Notes,
+                             Name=ca.Name,
                              OurRefRecno = ca.OurRefKey,
                              OurRefSearchName = ca.OurRef.SearchName,
                              OurRefEmail = ca.OurRef.Email,
@@ -63,7 +65,7 @@ namespace SI.Biz.Core.Bot.Case.RepositoryLogics
                              ,
                              OrgUnit = new BotContact
                              {
-                                 Recno = caseInfo.OrgUnitRecno.HasValue ? caseInfo.OurRefRecno.Value : -1
+                                 Recno = caseInfo.OrgUnitRecno.HasValue ? caseInfo.OrgUnitRecno.Value : -1
                                            ,
                                  SearchName = caseInfo.OrgUnitSearchName
                                            ,

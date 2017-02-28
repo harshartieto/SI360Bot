@@ -17,7 +17,7 @@ namespace SI.Biz.Core.Bot.Case.RepositoryLogics
     {
         public IEnumerable<BotContact> GetAllResponsiblePersons(string responsible)
         {
-            var responsibles = Get.Context.Contact.Where(ct => ct.SearchName.OprLike(responsible))
+            var responsibles = Get.Context.Contact.Where(ct => ct.SearchName.OprLike("%"+responsible+"%"))
                             .Select(ct => new { ct.Recno, ct.SearchName, ct.Email });
 
             var responsibleList = new List<BotContact>();

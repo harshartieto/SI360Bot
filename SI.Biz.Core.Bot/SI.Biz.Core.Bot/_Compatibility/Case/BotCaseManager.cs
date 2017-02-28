@@ -47,9 +47,9 @@ namespace SI.Biz.Core.Bot.Compatibility
             return string.Empty;
         }
 
-        public string FindCasesByResponsible(string id, string userId)
+        public string FindCasesByResponsible(string id, string contactId)
         {
-            var botCase = Invoke(id, () => SI.Biz.Core.Bot.BotCaseManager.FindCasesByResponsible(userId));
+            var botCase = Invoke(id, () => SI.Biz.Core.Bot.BotCaseManager.FindCasesByResponsible(contactId));
             return string.Empty;
         }
 

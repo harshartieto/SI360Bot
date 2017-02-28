@@ -23,7 +23,7 @@ namespace SI.Biz.Core.Bot.UnitTest.Case
         [TestMethod]
         public void FindCaseMyNumber_Finds360CaseByItsNumber_ReturnsBotCaseObject()
         {
-            var result = _caseManagerInvoker.FindCaseByNumber("no\\rd-super", "16/00001");
+            var result = _caseManagerInvoker.FindCaseByNumber("no\\rd-super", "17/00001");
             Assert.IsNotNull(result);
             //Assert.IsTrue(!string.IsNullOrEmpty(caseDetail));
         }

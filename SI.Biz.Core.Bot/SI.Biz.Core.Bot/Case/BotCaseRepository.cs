@@ -16,18 +16,22 @@ namespace SI.Biz.Core.Bot.Case
 
         IEnumerable<BotCase> FindCasesByTitle(string title, IFindCasesByTitle objCaseByTitle);
 
-        IEnumerable<BotCase> FindCasesByStatus(int status, IFindCasesByStatus objCaseByStatus);
+        IEnumerable<BotCase> FindCasesByStatus(string status, IFindCasesByStatus objCaseByStatus);
 
         IEnumerable<BotCase> GetMyOpenCases(string userId, IFindMyOpenCases objGetMyOpenCases);
 
-        IEnumerable<BotCase> FindCasesByResponsible(int ourRefKey, IFindCasesByResponsible objCaseByResponsible);
+        IEnumerable<BotCase> FindCasesByResponsible(string ourRefKey, IFindCasesByResponsible objCaseByResponsible);
 
         IEnumerable<BotContact> GetAllResponsiblePersons(string searchName, IFindAllResponsiblePersons objCaseByClassCode);
-
+        IEnumerable<BotCaseStatus> GetAllCaseStatus(IFindAllCaseStatus objGetAllCaseStatus);
     }
 
     class BotCaseRepository : IBotCaseRepository
     {
+        public IEnumerable<BotCaseStatus> GetAllCaseStatus(IFindAllCaseStatus objGetAllCaseStatus) {
+            return objGetAllCaseStatus.GetAllCaseStatus();
+        }
+
         public IEnumerable<BotCase> GetMyOpenCases(string userId, IFindMyOpenCases objGetMyOpenCases)
         {
             return objGetMyOpenCases.GetMyOpenCases(userId);
@@ -48,12 +52,12 @@ namespace SI.Biz.Core.Bot.Case
             return objCaseByTitle.GetCasesByTitle(title);
         }
 
-        public IEnumerable<BotCase> FindCasesByResponsible(int ourRefKey, IFindCasesByResponsible objCaseByResponsible)
+        public IEnumerable<BotCase> FindCasesByResponsible(string ourRefKey, IFindCasesByResponsible objCaseByResponsible)
         {
             return objCaseByResponsible.GetCasesByResponsible(ourRefKey);
         }
 
-        public IEnumerable<BotCase> FindCasesByStatus(int status, IFindCasesByStatus objCaseByStatus)
+        public IEnumerable<BotCase> FindCasesByStatus(string status, IFindCasesByStatus objCaseByStatus)
         {
             return objCaseByStatus.GetCasesByStatus(status);
         }

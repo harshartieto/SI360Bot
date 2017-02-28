@@ -10,12 +10,12 @@ namespace SI.Biz.Core.Bot.Case.RepositoryLogics
 {
     interface IFindAllCaseStatus
     {
-        IEnumerable<SI.Biz.Core.Bot.BotCaseStatus> GetAllCaseStatus(string title);
+        IEnumerable<SI.Biz.Core.Bot.BotCaseStatus> GetAllCaseStatus();
     }
 
     sealed class FindAllCaseStatus : IFindAllCaseStatus
     {
-        public IEnumerable<BotCaseStatus> GetAllCaseStatus(string title)
+        public IEnumerable<BotCaseStatus> GetAllCaseStatus()
         {
             var caseStatus = Get.ContextACLBypassed.CodeTableCasestatus.Select(cs => cs);
             
