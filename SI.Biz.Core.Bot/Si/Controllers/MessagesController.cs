@@ -11,6 +11,8 @@ using Microsoft.Bot.Builder.Dialogs;
 using System.Collections.Generic;
 using System.Web.Script.Serialization;
 using Microsoft.Bot.Builder.FormFlow;
+using Microsoft.Bot.Builder.Luis;
+using Microsoft.Bot.Builder.Luis.Models;
 
 namespace Si
 {
@@ -26,14 +28,8 @@ namespace Si
         {
             if (activity.Type == ActivityTypes.Message)
             {
-                ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-               
-                //Activity istypingreply= activity.CreateReply();
-                //istypingreply.Type =ActivityTypes.Typing;
-                //istypingreply.Text = "typing...";
-                //await connector.Conversations.ReplyToActivityAsync(istypingreply);
-
-                await Conversation.SendAsync(activity, () => new CaseDialog());
+                //ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                await Conversation.SendAsync(activity, () => new Luisdialog());
 
             }
             else
@@ -47,14 +43,15 @@ namespace Si
         {
             const string url = "/api/bot/";
             //Activity caseactivity;
+            public List<BotCaseStatus> statusL;
             public CaseDialog()
             {
-               // caseactivity = activity;
+                // caseactivity = activity;
             }
             public async Task StartAsync(IDialogContext context)
             {
                 await context.PostAsync("Hi,how can i help You...");
-                   context.Wait(MessageReceivedStart);
+                context.Wait(MessageReceivedStart);
             }
             public async Task MessageReceivedStart(IDialogContext context, IAwaitable<IMessageActivity> argument)
             {
@@ -64,16 +61,19 @@ namespace Si
                     await context.PostAsync("Enter case number:");
                     context.Wait(GetCaseByNumber);
                 }
-                else if (message.Text.Contains("title")) {
+                else if (message.Text.Contains("title"))
+                {
                     await context.PostAsync("Enter case name:");
                     context.Wait(GetCaseByTitle);
                 }
 
-                else if (message.Text.Contains("status")) {
+                else if (message.Text.Contains("status"))
+                {
                     context.Wait(GetCaseBystatus);
                 }
 
-                else if (message.Text.Contains("responsible") || message.Text.Contains("person")) {
+                else if (message.Text.Contains("responsible") || message.Text.Contains("person"))
+                {
                     await context.PostAsync("Enter responsible person's name");
                     context.Wait(GetCaseByResponsible);
                 }
@@ -93,7 +93,7 @@ namespace Si
                 {
                     context.Wait(MessageReceivedStart);
                 }
-            }   
+            }
             public async Task GetCaseByResponsible(IDialogContext context, IAwaitable<IMessageActivity> argument)
             {
                 var caseVariable = await argument;
@@ -108,8 +108,9 @@ namespace Si
                 var jSerializer = new JavaScriptSerializer();
                 var contactInfo = jSerializer.Deserialize<IEnumerable<BotContact>>(result);
                 List<BotContact> contactList = contactInfo.ToList();
-                string reckno="";
-                foreach (var contact in contactList) {
+                string reckno = "";
+                foreach (var contact in contactList)
+                {
                     reckno = contact.Recno.ToString();
                 }
                 HttpResponseMessage res = await client.GetAsync(url + "/GetAllCasesOfResponsiblePerson?contactId=" + reckno);
@@ -132,7 +133,7 @@ namespace Si
                     List<CardAction> cardButtons = new List<CardAction>();
                     CardAction caseButton = new CardAction()
                     {
-                        Value =url_360,
+                        Value = url_360,
                         Type = "openUrl",
                         Title = "More details"
                     };
@@ -157,50 +158,40 @@ namespace Si
             public async Task GetCaseBystatus(IDialogContext context, IAwaitable<IMessageActivity> argument)
             {
                 var r = await argument;
-                var statusform = new FormDialog<GetAllCaseStatus>(new GetAllCaseStatus(), GetAllCaseStatus.BuildForm, FormOptions.PromptInStart, null);
-                context.Call<GetAllCaseStatus>(statusform, FormComplete);
+                //var statusform = new FormDialog<GetAllCaseStatus>(new GetAllCaseStatus(), GetAllCaseStatus.BuildForm, FormOptions.PromptInStart, null);
+                //context.Call<GetAllCaseStatus>(statusform, FormComplete);
+                HttpClient client = new HttpClient();
+                client.BaseAddress = new Uri("http://localhost:63526/");
 
-
+                HttpResponseMessage response = await client.GetAsync(url + "/GetAllCaseStatus/");
+                response.EnsureSuccessStatusCode();
+                var result = await response.Content.ReadAsStringAsync();
+                result = result.Replace("k__BackingField", "").Replace("<", "").Replace(">", "");
+                var jSerializer = new JavaScriptSerializer();
+                var cases = jSerializer.Deserialize<IEnumerable<BotCaseStatus>>(result);
+                List<string> statusList = new List<string>();
+                foreach (BotCaseStatus status in cases) {
+                    statusList.Add(status.Code);
+                }
+                statusL = cases.ToList();
+                PromptOptions<string> options = new PromptOptions<string>("Choose a status",
+                 "Sorry please try again", "", statusList, 2);
+                PromptDialog.Choice<string>(context, FormComplete, options);
             }
-            private async Task FormComplete(IDialogContext context, IAwaitable<GetAllCaseStatus> result1)
+            private async Task FormComplete(IDialogContext context, IAwaitable<string> result1)
             {
-                GetAllCaseStatus order = null;
-                try
-                {
-                    order = await result1;
-                    string status = order.status.ToString();
-                    string statusKey="";
-                    switch (status) { 
-                        case "CA":
-                            statusKey = "8";
-                            break;
-                        case "NF":
-                            statusKey = "7";
-                            break;
-                        case "CE":
-                            statusKey = "9";
-                            break;
-                        case "CC":
-                            statusKey = "17";
-                            break;
-                        case "CL":
-                            statusKey = "6";
-                            break;
-                        case "IP":
-                            statusKey = "5";
-                            break;
-                        case "R":
-                            statusKey = "4";
-                            break;
-                        default:
-                            statusKey = "8";
-                            break;
+                var chosenStatus = await result1;
+                string statusKey = "";
+                foreach (BotCaseStatus status in statusL) {
+                    if (status.Code == chosenStatus) {
+                        statusKey = status.Recno.ToString();
                     }
-
+                }
+                
                     HttpClient client = new HttpClient();
                     client.BaseAddress = new Uri("http://localhost:63526/");
 
-                    HttpResponseMessage response = await client.GetAsync(url + "/CasesByStatus?statusKey=" +statusKey);
+                    HttpResponseMessage response = await client.GetAsync(url + "/CasesByStatus?statusKey=" + statusKey);
                     response.EnsureSuccessStatusCode();
                     var result = await response.Content.ReadAsStringAsync();
                     result = result.Replace("k__BackingField", "").Replace("<", "").Replace(">", "");
@@ -221,7 +212,7 @@ namespace Si
                         List<CardAction> cardButtons = new List<CardAction>();
                         CardAction caseButton = new CardAction()
                         {
-                            Value =url_360,
+                            Value = url_360,
                             Type = "openUrl",
                             Title = "More details"
                         };
@@ -242,93 +233,79 @@ namespace Si
                     }
                     await context.PostAsync(replyMessage);
                     context.Wait(MessageReceivedStart);
-                }
-                catch (OperationCanceledException)
-                {
-                   // await context.PostAsync("You canceled the form!");
-                    return;
-                }
-
-                if (order != null)
-                {
-                   // await context.PostAsync("Your Pizza Order: " + order.ToString());
-                }
-                else
-                {
-                    await context.PostAsync("Form returned empty response!");
-                }
+                
 
                 context.Wait(MessageReceivedStart);
             }
-            internal static IDialog<GetAllCaseStatus> MakeRootDialog()
-             {
-             return Chain.From(() => FormDialog.FromForm(GetAllCaseStatus.BuildForm))
-                .Do(async (context, order) =>
-                {
-                    try
-                    {
-                        var completed = await order;
-                        string status = completed.status.ToString();
+            //internal static IDialog<GetAllCaseStatus> MakeRootDialog()
+            //{
+            //    return Chain.From(() => FormDialog.FromForm(GetAllCaseStatus.BuildForm))
+            //       .Do(async (context, order) =>
+            //       {
+            //           try
+            //           {
+            //               var completed = await order;
+            //               string status = completed.status.ToString();
 
-                        HttpClient client = new HttpClient();
-                        client.BaseAddress = new Uri("http://localhost:63526/");
+            //               HttpClient client = new HttpClient();
+            //               client.BaseAddress = new Uri("http://localhost:63526/");
 
-                        HttpResponseMessage response = await client.GetAsync(url + "/CasesByStatus?statusKey=" + status);
-                        response.EnsureSuccessStatusCode();
-                        var result = await response.Content.ReadAsStringAsync();
-                        result = result.Replace("k__BackingField", "").Replace("<", "").Replace(">", "");
-                        var jSerializer = new JavaScriptSerializer();
-                        var cases = jSerializer.Deserialize<IEnumerable<BotCase>>(result);
-                        var replyMessage = context.MakeMessage();
-                        replyMessage.Text = "  Here are the cases I found..";
-                        replyMessage.AttachmentLayout = "carousel";
-                        replyMessage.Attachments = new List<Attachment>();
+            //               HttpResponseMessage response = await client.GetAsync(url + "/CasesByStatus?statusKey=" + status);
+            //               response.EnsureSuccessStatusCode();
+            //               var result = await response.Content.ReadAsStringAsync();
+            //               result = result.Replace("k__BackingField", "").Replace("<", "").Replace(">", "");
+            //               var jSerializer = new JavaScriptSerializer();
+            //               var cases = jSerializer.Deserialize<IEnumerable<BotCase>>(result);
+            //               var replyMessage = context.MakeMessage();
+            //               replyMessage.Text = "  Here are the cases I found..";
+            //               replyMessage.AttachmentLayout = "carousel";
+            //               replyMessage.Attachments = new List<Attachment>();
 
-                        List<BotCase> caseList = cases.ToList();
+            //               List<BotCase> caseList = cases.ToList();
 
 
-                        foreach (BotCase caseObject in caseList)
-                        {
-                            List<CardAction> cardButtons = new List<CardAction>();
-                            CardAction caseButton = new CardAction()
-                            {
-                                Value = "https://en.wikipedia.org/wiki/Pig_Latin",
-                                Type = "openUrl",
-                                Title = "More details"
-                            };
-                            cardButtons.Add(caseButton);
-                            HeroCard a = new HeroCard();
+            //               foreach (BotCase caseObject in caseList)
+            //               {
+            //                   List<CardAction> cardButtons = new List<CardAction>();
+            //                   CardAction caseButton = new CardAction()
+            //                   {
+            //                       Value = "https://en.wikipedia.org/wiki/Pig_Latin",
+            //                       Type = "openUrl",
+            //                       Title = "More details"
+            //                   };
+            //                   cardButtons.Add(caseButton);
+            //                   HeroCard a = new HeroCard();
 
-                            HeroCard caseCard = new HeroCard()
-                            {
-                                Title = caseObject.Title,
-                                Subtitle = caseObject.Description,
-                                Buttons = cardButtons,
-                                Text = caseObject.OrgUnit.SearchName
-                            };
-                            Attachment caseAttachment = caseCard.ToAttachment();
-                            caseAttachment.ContentType = "application/vnd.microsoft.card.hero";
+            //                   HeroCard caseCard = new HeroCard()
+            //                   {
+            //                       Title = caseObject.Title,
+            //                       Subtitle = caseObject.Description,
+            //                       Buttons = cardButtons,
+            //                       Text = caseObject.OrgUnit.SearchName
+            //                   };
+            //                   Attachment caseAttachment = caseCard.ToAttachment();
+            //                   caseAttachment.ContentType = "application/vnd.microsoft.card.hero";
 
-                            replyMessage.Attachments.Add(caseAttachment);
-                        }
-                        await context.PostAsync(replyMessage);
-            //            context.Wait(MessageReceivedStart);
-            
-                    }
-                    catch (FormCanceledException<GetAllCaseStatus> e)
-                    {
-                        string reply;
-                        if (e.InnerException == null)
-                        {
-                            reply = "Error occured";
-                        }
-                        else
-                        {
-                            reply = "Sorry, I've had a short circuit.  Please try again.";
-                        }
-                    }
-                });
-            }
+            //                   replyMessage.Attachments.Add(caseAttachment);
+            //               }
+            //               await context.PostAsync(replyMessage);
+            //               //            context.Wait(MessageReceivedStart);
+
+            //           }
+            //           catch (FormCanceledException<GetAllCaseStatus> e)
+            //           {
+            //               string reply;
+            //               if (e.InnerException == null)
+            //               {
+            //                   reply = "Error occured";
+            //               }
+            //               else
+            //               {
+            //                   reply = "Sorry, I've had a short circuit.  Please try again.";
+            //               }
+            //           }
+            //       });
+            //}
             public async Task GetCaseByNumber(IDialogContext context, IAwaitable<IMessageActivity> argument)
             {
                 var caseVariable = await argument;
@@ -337,11 +314,11 @@ namespace Si
                 HttpClient client = new HttpClient();
                 client.BaseAddress = new Uri("http://localhost:63526/");
 
-                HttpResponseMessage response = await client.GetAsync(url +"/CaseByNumber?caseNumber=" + caseNumber);
+                HttpResponseMessage response = await client.GetAsync(url + "/CaseByNumber?caseNumber=" + caseNumber);
                 response.EnsureSuccessStatusCode();
 
                 var result = await response.Content.ReadAsStringAsync();
-                result = result.Replace("k__BackingField", "").Replace("<","").Replace(">","");
+                result = result.Replace("k__BackingField", "").Replace("<", "").Replace(">", "");
                 var jSerializer = new JavaScriptSerializer();
                 var caseObject = jSerializer.Deserialize<BotCase>(result);
 
@@ -350,23 +327,23 @@ namespace Si
                 replyMessage.Attachments = new List<Attachment>();
 
                 string url_360 = "http://localhost:3000/locator.aspx?name=DMS.Case.Details.Simplified.2&recno=RECNO&module=Case&subtype=2";
-                url_360=url_360.Replace("RECNO",caseObject.Recno.ToString());
+                url_360 = url_360.Replace("RECNO", caseObject.Recno.ToString());
                 List<CardAction> cardButtons = new List<CardAction>();
                 CardAction caseButton = new CardAction()
                 {
-                    Value =url_360,
+                    Value = url_360,
                     Type = "openUrl",
                     Title = "More details"
                 };
                 cardButtons.Add(caseButton);
                 HeroCard a = new HeroCard();
-               
+
                 HeroCard caseCard = new HeroCard()
                 {
                     Title = caseNumber + "  :  " + caseObject.Description,
                     Subtitle = caseObject.Title,
                     Buttons = cardButtons,
-                    Text=caseObject.OrgUnit.SearchName
+                    Text = caseObject.OrgUnit.SearchName
                 };
 
                 Attachment caseAttachment = caseCard.ToAttachment();
@@ -397,8 +374,9 @@ namespace Si
 
                 List<BotCase> caseList = cases.ToList();
 
-                
-                foreach (BotCase caseObject in caseList) {
+
+                foreach (BotCase caseObject in caseList)
+                {
                     List<CardAction> cardButtons = new List<CardAction>();
                     string url_360 = "http://localhost:3000/locator.aspx?name=DMS.Case.Details.Simplified.2&recno=RECNO&module=Case&subtype=2";
                     url_360 = url_360.Replace("RECNO", caseObject.Recno.ToString());
@@ -413,7 +391,7 @@ namespace Si
 
                     HeroCard caseCard = new HeroCard()
                     {
-                        Title =caseObject.Title,
+                        Title = caseObject.Title,
                         Subtitle = caseObject.Description,
                         Buttons = cardButtons,
                         Text = caseObject.OrgUnit.SearchName
@@ -427,5 +405,6 @@ namespace Si
                 context.Wait(MessageReceivedStart);
             }
         }
+
     }
 }

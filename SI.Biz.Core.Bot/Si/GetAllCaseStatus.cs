@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Web;
 
 namespace Si
@@ -20,7 +21,7 @@ namespace Si
     public class GetAllCaseStatus
     {
         public CaseStatusOptions status{get;set;}
-        public static IForm<GetAllCaseStatus> BuildForm()
+        public  static IForm<GetAllCaseStatus> BuildForm()
         {
             return new FormBuilder<GetAllCaseStatus>()
                         .Message("Choose a Status")
